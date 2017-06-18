@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">冤親債數</string>
+    <string name="app_start">遊戲開始</string>
+    <string name="app_rule">遊戲規則</string>
+    <string name="app_mulit">多人連線</string>
+    <string name="rule_intr">
+        遊戲規則：\n
+        1.每個玩家輪流當莊家,且可輸入1~3個連續數字(每回合數字皆會重置-從0開始)。\n\n
+        2.只有莊家可知道該回合數字。\n\n
+        3.如果猜中此數字此玩家扣1分，前一位玩家可以得到陷害加分1分。\n\n
+        4.如果猜中此數字此玩家扣1分，前一位玩家可以得到陷害加分1分，如為莊家則加2分。\n\n
+        5.遊戲共進行5回合,莊家輪流當,最後一回合則隨機抽籤。\n\n
+        \n
+        遊戲規範：\n
+        1.請不要因為我們的遊戲，而破壞了彼此的友誼。\n\n
+        2.請遵守我們所訂定的規則，讓遊戲能夠順利進行。\n\n
+        3.請不要因為遊戲輸了，而把手機摔爛。\n\n
+    </string>
+    <string name="rule_back">返回主頁</string>
+    <string name="choseMsg">
+        %s\n目前的玩家是你：\n請從 1 ~ 100 中挑選數字。\n
+    </string>
+
+    <string name="playingMsg">
+        %s\n輪到你了！\n趕快決定你的數字吧！\n起手無悔大丈夫！
+    </string>
+
+</resources>

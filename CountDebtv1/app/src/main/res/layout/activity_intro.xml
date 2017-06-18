@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg">
+
+    <TextView
+        android:id="@+id/scrollText"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="9"
+        android:background="@drawable/intro_bg"
+        android:maxLines="15"
+        android:padding="20dp"
+        android:paddingBottom="0dp"
+        android:paddingEnd="0dp"
+        android:scrollbars="vertical"
+        android:singleLine="false"
+        android:text="@string/rule_intr"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/back"
+        android:layout_width="350dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:background="@drawable/button1"
+        android:onClick="ruler"
+        android:text="@string/rule_back"
+        android:textSize="30sp" />
+</LinearLayout>
