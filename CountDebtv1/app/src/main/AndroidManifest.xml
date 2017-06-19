@@ -4,7 +4,6 @@
     android:orientation="vertical">
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
 
@@ -26,6 +25,7 @@
         <activity android:name=".IntroActivity" />
         <activity android:name=".GameActivity" />
         <activity android:name=".GamingActivity"></activity>
+        <activity android:name=".rank" />
     </application>
 
 </manifest>

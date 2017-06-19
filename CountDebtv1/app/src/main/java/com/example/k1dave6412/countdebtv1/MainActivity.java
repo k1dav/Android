@@ -3,6 +3,8 @@ package com.example.k1dave6412.countdebtv1;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,19 +24,9 @@ import com.shephertz.app42.gaming.multiplayer.client.listener.ConnectionRequestL
 
 public class MainActivity extends AppCompatActivity implements ConnectionRequestListener {
     Button start, rule, multiBtn;
-    String id;
     EditText editText;
-    WarpClient myGame;
-    //AsyncApp42ServiceApi asyncService;
-
-
-    public void onStart() {
-        super.onStart();
-    }
-
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
+    AsyncApp42ServiceApi asyncService;
+    MediaPlayer mPlayer;
 
     @Override
     public void onDisconnectDone(final ConnectEvent arg0) {
@@ -59,10 +51,10 @@ public class MainActivity extends AppCompatActivity implements ConnectionRequest
 
             this.finish();
             Intent intent = new Intent(this, RoomActivity.class);
-            intent.putExtra("User", id);
+            intent.putExtra("User", editText.getText().toString());
             this.startActivity(intent);
         } else {
-            Log.d("ERRORRRRR1223:", String.valueOf(connectEvent.getResult()));
+            Log.d("CONNECT_RESULT:", String.valueOf(connectEvent.getResult()));
         }
     }
 
@@ -70,22 +62,14 @@ public class MainActivity extends AppCompatActivity implements ConnectionRequest
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        WarpClient.initialize("028787cc650776dc57338c958c98e1db04e83f9f22747ae90f70f350e153bd8b", "2f4a6eef4702d8afb9e78892bc971be38f020b85e4009c5b61b96102da42bfd9");
 
         start = (Button) findViewById(R.id.start);
         rule = (Button) findViewById(R.id.rule);
         multiBtn = (Button) findViewById(R.id.multi);
-        try{
-            myGame = WarpClient.getInstance();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        myGame.addConnectionRequestListener(this);
 
-
-        /*
         asyncService = AsyncApp42ServiceApi.instance();
-        asyncService.getMyWarpClient().addConnectionRequestListener(MainActivity.this);*/
+        asyncService.getMyWarpClient().addConnectionRequestListener(MainActivity.this);
+        asyncService.getMyWarpClient().setRecoveryAllowance(10);
 
         start.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -117,15 +101,23 @@ public class MainActivity extends AppCompatActivity implements ConnectionRequest
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 editText = (EditText) views.findViewById(R.id.IDText);
-
-
-                                //asyncService.getMyWarpClient().connectWithUserName(editText.getText().toString());
-                                myGame.connectWithUserName(editText.getText().toString());
+                                asyncService.getMyWarpClient().connectWithUserName( editText.getText().toString());
                                 ProgressDialog progressDialog = ProgressDialog.show(MainActivity.this, "", "signing in..");
                             }
                         })
                         .show();
             }
         });
+
+        try
+        {
+            mPlayer = MediaPlayer.create(this, R.raw.music);
+            mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mPlayer.setLooping(true);
+            mPlayer.start();
+        }catch (IllegalStateException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

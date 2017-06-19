@@ -45,6 +45,7 @@ public class GameActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_game);
+
         if (host_id == players.length) {
             Random ran = new Random();
             host_id = ran.nextInt(4);
