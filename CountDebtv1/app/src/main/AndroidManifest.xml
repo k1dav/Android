@@ -3,7 +3,10 @@
     package="com.example.k1dave6412.countdebtv1"
     android:orientation="vertical">
 
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
     <application
+
         android:allowBackup="true"
         android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
