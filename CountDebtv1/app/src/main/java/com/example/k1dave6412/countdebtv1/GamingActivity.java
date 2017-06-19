@@ -51,7 +51,7 @@ public class GamingActivity extends AppCompatActivity {
         choose_player_pic(order_id);
         buttonTimesCheck();
 
-        count = new CountDownTimer(10000,1000){
+        count = new CountDownTimer(15000,1000){
 
             @Override
             public void onFinish() {
