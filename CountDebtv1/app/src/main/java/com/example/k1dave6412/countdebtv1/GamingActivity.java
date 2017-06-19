@@ -1,6 +1,7 @@
 package com.example.k1dave6412.countdebtv1;
 
 import android.content.Intent;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,10 +18,11 @@ public class GamingActivity extends AppCompatActivity {
 
     Button returnButton, passButton, addButton, nextPlayerButton;
     ImageView nowPlayers;
-    TextView playerMs, nowNumber;
+    TextView playerMs, nowNumber, time;
     int order_id = 0;
     int direction = 1, nnum = 0, btn_count = 0, ans, pre_player;
     boolean endGame;
+    CountDownTimer count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class GamingActivity extends AppCompatActivity {
         nowPlayers = (ImageView) findViewById(R.id.nowPlayer);
         playerMs = (TextView) findViewById(R.id.PlayerMsg);
         nowNumber = (TextView) findViewById(R.id.nowNum);
+        time = (TextView) findViewById(R.id.time);
         returnButton = (Button) findViewById(R.id.ReturnBtn);
         passButton = (Button) findViewById(R.id.PassBtn);
         addButton = (Button) findViewById(R.id.addNumBtn);
@@ -47,6 +50,19 @@ public class GamingActivity extends AppCompatActivity {
         playerMs.setText(getResources().getString(R.string.choseMsg, players[order_id].getName()));
         choose_player_pic(order_id);
         buttonTimesCheck();
+
+        count = new CountDownTimer(10000,1000){
+
+            @Override
+            public void onFinish() {
+                settlement();
+            }
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                time.setText("倒數（秒）："+millisUntilFinished/1000);
+            }
+        };
 
         addButton.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -73,38 +89,7 @@ public class GamingActivity extends AppCompatActivity {
                     returnButton.setVisibility(View.INVISIBLE);
                     nextPlayerButton.setVisibility(View.INVISIBLE);
 
-                    players[order_id].setScore(-1);
-                    if (pre_player == host_id) {
-                        players[pre_player].setScore(2);
-                    } else {
-                        players[pre_player].setScore(1);
-                    }
-                    if (players[order_id].getScore() < 0) {
-                        endGame = true;
-                    }
-
-                    if (endGame) {
-                        String toastMsg = "遊戲結束了！";
-                        Toast.makeText(GamingActivity.this, toastMsg, Toast.LENGTH_LONG).show();
-                        endGame = false;
-                        host_id = 0;
-
-                        Intent i = new Intent(GamingActivity.this, rank.class);
-                        startActivity(i);
-                        GamingActivity.this.finish();
-                    } else {
-                        String toastMsg = players[order_id].getName() + "，你輸了！" + players[pre_player].getName() + "得分\n當前分數：\n"
-                                + players[0].getName() + ":" + Integer.toString(players[0].getScore()) + "分\n"
-                                + players[1].getName() + ":" + Integer.toString(players[1].getScore()) + "分\n"
-                                + players[2].getName() + ":" + Integer.toString(players[2].getScore()) + "分\n"
-                                + players[3].getName() + ":" + Integer.toString(players[3].getScore()) + "分";
-                        Toast.makeText(GamingActivity.this, toastMsg, Toast.LENGTH_LONG).show();
-                        host_id += 1;
-
-                        Intent i = new Intent(GamingActivity.this, GameActivity.class);
-                        startActivity(i);
-                        GamingActivity.this.finish();
-                    }
+                    settlement();  //結算
 
                 }
                 if (btn_count == 3) {
@@ -136,6 +121,8 @@ public class GamingActivity extends AppCompatActivity {
                 nextPlayer();
             }
         });
+
+        count.start();
     }
 
     public void choose_player_pic(int id) {
@@ -170,6 +157,7 @@ public class GamingActivity extends AppCompatActivity {
     }
 
     public void nextPlayer() {
+        count.cancel();
         pre_player = order_id;
         order_id = (order_id + direction) % players.length;
         if (order_id < 0) {
@@ -182,6 +170,43 @@ public class GamingActivity extends AppCompatActivity {
         addButton.setVisibility(View.VISIBLE);
         btn_count = 0;
         nextPlayerButton.setVisibility(View.INVISIBLE);
+        count.start();
+    }
+
+    public void settlement(){
+        count.cancel();
+        players[order_id].setScore(-1);
+        if (pre_player == host_id) {
+            players[pre_player].setScore(2);
+        } else {
+            players[pre_player].setScore(1);
+        }
+        if (players[order_id].getScore() < 0) {
+            endGame = true;
+        }
+
+        if (endGame) {
+            String toastMsg = "遊戲結束了！";
+            Toast.makeText(GamingActivity.this, toastMsg, Toast.LENGTH_LONG).show();
+            endGame = false;
+            host_id = 0;
+
+            Intent i = new Intent(GamingActivity.this, rank.class);
+            startActivity(i);
+            GamingActivity.this.finish();
+        } else {
+            String toastMsg = players[order_id].getName() + "，你輸了！" + players[pre_player].getName() + "得分\n當前分數：\n"
+                    + players[0].getName() + ":" + Integer.toString(players[0].getScore()) + "分\n"
+                    + players[1].getName() + ":" + Integer.toString(players[1].getScore()) + "分\n"
+                    + players[2].getName() + ":" + Integer.toString(players[2].getScore()) + "分\n"
+                    + players[3].getName() + ":" + Integer.toString(players[3].getScore()) + "分";
+            Toast.makeText(GamingActivity.this, toastMsg, Toast.LENGTH_LONG).show();
+            host_id += 1;
+
+            Intent i = new Intent(GamingActivity.this, GameActivity.class);
+            startActivity(i);
+            GamingActivity.this.finish();
+        }
     }
 
 }
