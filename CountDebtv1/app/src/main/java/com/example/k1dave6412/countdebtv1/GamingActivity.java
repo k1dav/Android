@@ -20,6 +20,7 @@ public class GamingActivity extends AppCompatActivity {
     TextView playerMs, nowNumber;
     int order_id = 0;
     int direction = 1, nnum = 0, btn_count = 0, ans, pre_player;
+    boolean endGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class GamingActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         ans = bundle.getInt("ans");
+        endGame = bundle.getBoolean("endgame");
         order_id = host_id;
 
         nowNumber.setText(String.valueOf(nnum));
@@ -82,16 +84,20 @@ public class GamingActivity extends AppCompatActivity {
                     }
 
                     if (endGame) {
-                        String toastMsg = "遊戲結束了！重新開始遊戲！\n排名如下：\n" + sort_rank();
+                        String toastMsg = "遊戲結束了！";
                         Toast.makeText(GamingActivity.this, toastMsg, Toast.LENGTH_LONG).show();
                         endGame = false;
                         host_id = 0;
 
-                        Intent i = new Intent(GamingActivity.this, MainActivity.class);
+                        Intent i = new Intent(GamingActivity.this, rank.class);
                         startActivity(i);
                         GamingActivity.this.finish();
                     } else {
-                        String toastMsg = players[order_id].getName() + "，你輸了！" + players[pre_player].getName() + "得分\n遊戲即將重新開始！";
+                        String toastMsg = players[order_id].getName() + "，你輸了！" + players[pre_player].getName() + "得分\n當前分數：\n"
+                                + players[0].getName() + ":" + Integer.toString(players[0].getScore()) + "分\n"
+                                + players[1].getName() + ":" + Integer.toString(players[1].getScore()) + "分\n"
+                                + players[2].getName() + ":" + Integer.toString(players[2].getScore()) + "分\n"
+                                + players[3].getName() + ":" + Integer.toString(players[3].getScore()) + "分";
                         Toast.makeText(GamingActivity.this, toastMsg, Toast.LENGTH_LONG).show();
                         host_id += 1;
 
@@ -176,27 +182,6 @@ public class GamingActivity extends AppCompatActivity {
         addButton.setVisibility(View.VISIBLE);
         btn_count = 0;
         nextPlayerButton.setVisibility(View.INVISIBLE);
-    }
-
-    public String sort_rank() {
-        String retS = "";
-
-        for (int i = 0; i <= players.length - 2; i++) {
-            for (int j = i + 1; j <= players.length - 1; j++) {
-                if (players[i].getScore() < players[j].getScore()) {
-                    Player t;
-                    t = players[i];
-                    players[i] = players[j];
-                    players[j] = t;
-                }
-            }
-        }
-
-        for (int i = 0; i <= players.length - 1; i++) {
-            retS = retS + "第" + (i + 1) + "名是： " + players[i].getName() + "     分數為：   " + Integer.toString(players[i].getScore()) + "分\n";
-        }
-
-        return retS;
     }
 
 }

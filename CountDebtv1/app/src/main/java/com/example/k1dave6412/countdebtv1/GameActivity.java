@@ -67,6 +67,7 @@ public class GameActivity extends AppCompatActivity {
                 Intent i = new Intent(GameActivity.this, GamingActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("ans", ans);
+                bundle.putBoolean("endgame", endGame);
                 i.putExtras(bundle);
 
                 startActivity(i);
