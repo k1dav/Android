@@ -34,6 +34,8 @@ public class GamingActivity extends AppCompatActivity {
         addButton = (Button) findViewById(R.id.addNumBtn);
         nextPlayerButton = (Button) findViewById(R.id.nextBtn);
 
+        if(host_id == 0){pre_player = 3;}else{pre_player = host_id -1;}
+
 
         Bundle bundle = getIntent().getExtras();
         ans = bundle.getInt("ans");
