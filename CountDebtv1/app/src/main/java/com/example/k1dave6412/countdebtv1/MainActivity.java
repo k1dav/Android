@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     join the Zone by giving in the user name as the parameter with which the client wishes
     to join the online application.
 
-    WarpClient.getInstance().connectWithUserName("Jonathan");    
+    WarpClient.getInstance().connectWithUserName("Jonathan");
      */
 
 }
