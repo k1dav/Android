@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static com.example.k1dave6412.countdebtv1.GameActivity.endGame;
 import static com.example.k1dave6412.countdebtv1.GameActivity.host_id;
 import static com.example.k1dave6412.countdebtv1.GameActivity.players;
 
@@ -18,7 +19,7 @@ public class GamingActivity extends AppCompatActivity {
     ImageView nowPlayers;
     TextView playerMs, nowNumber;
     int order_id = 0;
-    int direction = 1, nnum = 0, btn_count = 0, ans;
+    int direction = 1, nnum = 0, btn_count = 0, ans, pre_player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +51,16 @@ public class GamingActivity extends AppCompatActivity {
                 if (nextPlayerButton.getVisibility() == View.INVISIBLE) {
                     nextPlayerButton.setVisibility(View.VISIBLE);
                 }
+                if (passButton.getVisibility() == View.VISIBLE) {
+                    passButton.setVisibility(View.INVISIBLE);
+                }
+                if (returnButton.getVisibility() == View.VISIBLE) {
+                    returnButton.setVisibility(View.INVISIBLE);
+                }
+
                 btn_count += 1;
                 nnum += 1;
+
                 nowNumber.setText(String.valueOf(nnum));
 
                 if (nnum == ans) {
@@ -60,14 +69,34 @@ public class GamingActivity extends AppCompatActivity {
                     returnButton.setVisibility(View.INVISIBLE);
                     nextPlayerButton.setVisibility(View.INVISIBLE);
 
-                    String toastMsg = players[order_id].getName() + "，你輸了！遊戲即將重新開始！";
-                    Toast.makeText(GamingActivity.this, toastMsg, Toast.LENGTH_LONG).show();
-                    host_id += 1;
-                    btn_count = 0;
+                    players[order_id].setScore(-1);
+                    if (pre_player == host_id) {
+                        players[pre_player].setScore(2);
+                    } else {
+                        players[pre_player].setScore(1);
+                    }
+                    if (players[order_id].getScore() < 0) {
+                        endGame = true;
+                    }
 
-                    Intent i = new Intent(GamingActivity.this, GameActivity.class);
-                    startActivity(i);
-                    GamingActivity.this.finish();
+                    if (endGame) {
+                        String toastMsg = "遊戲結束了！重新開始遊戲！\n排名如下：\n" + sort_rank();
+                        Toast.makeText(GamingActivity.this, toastMsg, Toast.LENGTH_LONG).show();
+                        endGame = false;
+                        host_id = 0;
+
+                        Intent i = new Intent(GamingActivity.this, MainActivity.class);
+                        startActivity(i);
+                        GamingActivity.this.finish();
+                    } else {
+                        String toastMsg = players[order_id].getName() + "，你輸了！" + players[pre_player].getName() + "得分\n遊戲即將重新開始！";
+                        Toast.makeText(GamingActivity.this, toastMsg, Toast.LENGTH_LONG).show();
+                        host_id += 1;
+
+                        Intent i = new Intent(GamingActivity.this, GameActivity.class);
+                        startActivity(i);
+                        GamingActivity.this.finish();
+                    }
 
                 }
                 if (btn_count == 3) {
@@ -133,6 +162,7 @@ public class GamingActivity extends AppCompatActivity {
     }
 
     public void nextPlayer() {
+        pre_player = order_id;
         order_id = (order_id + direction) % players.length;
         if (order_id < 0) {
             order_id += players.length;
@@ -144,6 +174,27 @@ public class GamingActivity extends AppCompatActivity {
         addButton.setVisibility(View.VISIBLE);
         btn_count = 0;
         nextPlayerButton.setVisibility(View.INVISIBLE);
+    }
+
+    public String sort_rank() {
+        String retS = "";
+
+        for (int i = 0; i <= players.length - 2; i++) {
+            for (int j = i + 1; j <= players.length - 1; j++) {
+                if (players[i].getScore() < players[j].getScore()) {
+                    Player t;
+                    t = players[i];
+                    players[i] = players[j];
+                    players[j] = t;
+                }
+            }
+        }
+
+        for (int i = 0; i <= players.length - 1; i++) {
+            retS = retS + "第" + (i + 1) + "名是： " + players[i].getName() + "     分數為：   " + Integer.toString(players[i].getScore()) + "分\n";
+        }
+
+        return retS;
     }
 
 }
