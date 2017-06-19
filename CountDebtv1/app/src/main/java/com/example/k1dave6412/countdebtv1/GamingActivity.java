@@ -42,7 +42,7 @@ public class GamingActivity extends AppCompatActivity {
         order_id = host_id;
 
         nowNumber.setText(String.valueOf(nnum));
-        playerMs.setText(getResources().getString(R.string.choseMsg, players[order_id].getName()));
+        playerMs.setText(getResources().getString(R.string.playingMsg, players[order_id].getName(),players[order_id].getScore()));
         choose_player_pic(order_id);
         buttonTimesCheck();
 
@@ -171,7 +171,7 @@ public class GamingActivity extends AppCompatActivity {
         }
         buttonTimesCheck();
 
-        playerMs.setText(getResources().getString(R.string.choseMsg, players[order_id].getName()));
+        playerMs.setText(getResources().getString(R.string.playingMsg, players[order_id].getName(),players[order_id].getScore()));
         choose_player_pic(order_id);
         addButton.setVisibility(View.VISIBLE);
         btn_count = 0;

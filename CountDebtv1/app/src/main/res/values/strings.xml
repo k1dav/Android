@@ -22,7 +22,7 @@
     </string>
 
     <string name="playingMsg">
-        %s\n輪到你了！\n趕快決定你的數字吧！\n起手無悔大丈夫！
+        %1$s到你了！\n你的分數：%2$d\n決定你的數字吧！\n起手無悔大丈夫！
     </string>
 
 </resources>

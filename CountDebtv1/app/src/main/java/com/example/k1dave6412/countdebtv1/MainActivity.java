@@ -1,19 +1,70 @@
 package com.example.k1dave6412.countdebtv1;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.example.k1dave6412.countdebtv1.MultiPlayer.RoomActivity;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode;
 import com.shephertz.app42.gaming.multiplayer.client.events.ConnectEvent;
 import com.shephertz.app42.gaming.multiplayer.client.listener.ConnectionRequestListener;
 
 
-public class MainActivity extends AppCompatActivity {
-    Button start, rule;
+public class MainActivity extends AppCompatActivity implements ConnectionRequestListener {
+    Button start, rule, multiBtn;
+    String id;
+    EditText editText;
+    WarpClient myGame;
+    //AsyncApp42ServiceApi asyncService;
+
+
+    public void onStart() {
+        super.onStart();
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDisconnectDone(final ConnectEvent arg0) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("ERROR:::", "onDisconnectDone" + arg0.getResult());
+            }
+        });
+    }
+
+    @Override
+    public void onInitUDPDone(byte arg0) {
+        // TODO Auto-generated method stub
+        Log.d("EOOOORO", "onInitUDPDone");
+    }
+
+    @Override
+    public void onConnectDone(ConnectEvent connectEvent) {
+        if (connectEvent.getResult() == WarpResponseResultCode.SUCCESS) {
+            Toast.makeText(this, "連線成功！", Toast.LENGTH_SHORT).show();
+
+            this.finish();
+            Intent intent = new Intent(this, RoomActivity.class);
+            intent.putExtra("User", id);
+            this.startActivity(intent);
+        } else {
+            Log.d("ERRORRRRR1223:", String.valueOf(connectEvent.getResult()));
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +74,18 @@ public class MainActivity extends AppCompatActivity {
 
         start = (Button) findViewById(R.id.start);
         rule = (Button) findViewById(R.id.rule);
+        multiBtn = (Button) findViewById(R.id.multi);
+        try{
+            myGame = WarpClient.getInstance();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        myGame.addConnectionRequestListener(this);
+
+
+        /*
+        asyncService = AsyncApp42ServiceApi.instance();
+        asyncService.getMyWarpClient().addConnectionRequestListener(MainActivity.this);*/
 
         start.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -41,43 +104,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
+        multiBtn.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+                final View views = inflater.inflate(R.layout.custom_dialog, null);
 
-    /*
-    3Defining Listener Callbacks:It is recommended that you should implement request
-    listeners which will be called by WarpClient with the result of the requests. WarpClient
-     comprises different listeners for different type of requests. Here is a simple implementation
-     of connection request listener.
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("多人連線…")
+                        .setView(views)
+                        .setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                editText = (EditText) views.findViewById(R.id.IDText);
 
-    public abstract class MyConnectionListener implements ConnectionRequestListener {
-        @Override
-        public void onConnectDone(ConnectEvent event) {
-            if (event.getResult() == WarpResponseResultCode.SUCCESS) {
-                System.out.println("yipee I have connected");
+
+                                //asyncService.getMyWarpClient().connectWithUserName(editText.getText().toString());
+                                myGame.connectWithUserName(editText.getText().toString());
+                                ProgressDialog progressDialog = ProgressDialog.show(MainActivity.this, "", "signing in..");
+                            }
+                        })
+                        .show();
             }
-        }
-
-        @Override
-        public void onDisconnectDone(ConnectEvent event) {
-            System.out.println("On Disconnected invoked");
-        }
+        });
     }
-    */
-
-    /*
-    4Adding Listeners.Once the request listeners are implemented,
-    they need to be added to WarpClient instance as follows:
-    WarpClient myGame = WarpClient.getInstance();
-    myGame.addConnectionRequestListener(new
-    MyConnectionListener());
-    */
-
-    /*5Connecting to the AppWarp Server:Once you have supplied all the listeners you just need
-    to call the connectWithUserName() method of WarpClient to connect to AppWarp server and
-    join the Zone by giving in the user name as the parameter with which the client wishes
-    to join the online application.
-
-    WarpClient.getInstance().connectWithUserName("Jonathan");
-     */
-
 }
